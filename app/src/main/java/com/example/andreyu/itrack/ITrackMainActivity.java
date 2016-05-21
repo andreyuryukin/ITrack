@@ -31,22 +31,22 @@ public class ITrackMainActivity extends AppCompatActivity {
 
         logTextView = (TextView) findViewById(R.id.textViewLog);
         logTextView.setMovementMethod(new ScrollingMovementMethod());
-        stringLog = "Start of the execution";
+        stringLog = "start of the execution";
         logTextView.setText(stringLog);
     }
 
     public void startTracking(View v) {
 
-        stringLog = logTextView.getText() + "\n startTracking: beginning";
+        stringLog = logTextView.getText() + "\nstartTracking: beginning";
         logTextView.setText(stringLog);
 
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        stringLog = logTextView.getText() + "\n startTracking: getting initial location";
+        stringLog = logTextView.getText() + "\nstartTracking: getting initial location";
         logTextView.setText(stringLog);
         initialLocation = getInitLocation();
 
-        stringLog = logTextView.getText() + "\n tartTracking: creating listener";
+        stringLog = logTextView.getText() + "\nstartTracking: creating listener";
         logTextView.setText(stringLog);
         listener = new GPSListener(ITrackMainActivity.this, initialLocation);
 
@@ -54,7 +54,7 @@ public class ITrackMainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        stringLog = logTextView.getText() + "\n startTracking: requesting updates";
+        stringLog = logTextView.getText() + "\nstartTracking: requesting updates";
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, listener);
     }
 
@@ -69,13 +69,13 @@ public class ITrackMainActivity extends AppCompatActivity {
                     != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                             != PackageManager.PERMISSION_GRANTED) {
-                stringLog = logTextView.getText() + "\n getLocation: checking permissions";
+                stringLog = logTextView.getText() + "\ngetLocation: checking permissions";
                 logTextView.setText(stringLog);
             }
 
             if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                stringLog = logTextView.getText() + "\n getLocation: requesting location";
+                stringLog = logTextView.getText() + "\ngetLocation: requesting location";
                 logTextView.setText(stringLog);
             }
         } else {
@@ -93,13 +93,24 @@ public class ITrackMainActivity extends AppCompatActivity {
                 LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
                         || manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    stringLog = logTextView.getText() + "\n onActivityResult: GPS was enabled";
+                    stringLog = logTextView.getText() + "\nonActivityResult: GPS was enabled";
                     logTextView.setText(stringLog);
                 } else {
-                    stringLog = logTextView.getText() + "\n onActivityResult: GPS was not enabled";
+                    stringLog = logTextView.getText() + "\nonActivityResult: GPS was not enabled";
                     logTextView.setText(stringLog);
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        manager.removeUpdates(listener);
+        stringLog = logTextView.getText() + "\nonStop removing listener updates";
+        logTextView.setText(stringLog);
     }
 }

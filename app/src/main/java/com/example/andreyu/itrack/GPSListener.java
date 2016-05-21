@@ -36,7 +36,9 @@ public class GPSListener implements LocationListener {
     public boolean fillLog;
     public boolean isBetterLocation;
     public static final int ONE_MINUTE = 1000 * 60;
+    public static final int ACCURACY_ATTEMPTS = 10;
     public ProgressBar progress;
+    public String text;
 
     public GPSListener(Context c, Location initLoc) {
 
@@ -59,7 +61,7 @@ public class GPSListener implements LocationListener {
         curAccTextView = (TextView) ((Activity) context).findViewById(R.id.textViewCurrAcc);
         movTypeTextView = (TextView) ((Activity) context).findViewById(R.id.textViewMovType);
         progressTextView = (TextView) ((Activity) context).findViewById(R.id.textViewProgress);
-        stringLog = stringLog + "\n GPSListener: constructor";
+        stringLog = stringLog + "\nGPSListener: constructor";
         logTextView.setText(stringLog);
         progressTable.setVisibility(View.VISIBLE);
     }
@@ -68,27 +70,28 @@ public class GPSListener implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-        if (accuracyDepth < 10) {
+        if (accuracyDepth < ACCURACY_ATTEMPTS) {
             initialLocation = location;
             prevLocation = location;
             accuracyDepth = accuracyDepth + 1;
-            progressTextView.setText("Setting GPS location " + accuracyDepth * 10 + "%");
+            text = "Setting GPS location " + accuracyDepth * 10 + "%";
+            progressTextView.setText(text);
             progress.setProgress(accuracyDepth);
-            stringLog = logTextView.getText() + "\n onLocationChanged: accuracy depth =" + accuracyDepth;
+            stringLog = logTextView.getText() + "\nonLocationChanged: accuracy depth =" + accuracyDepth;
             logTextView.setText(stringLog);
         } else {
             if (initialLocation == null) {
-                stringLog = logTextView.getText() + "\n onLocationChanged: initial location is null";
+                stringLog = logTextView.getText() + "\nonLocationChanged: initial location is null";
                 logTextView.setText(stringLog);
             } else if (location == null) {
-                stringLog = logTextView.getText() + "\n onLocationChanged: current location is null";
+                stringLog = logTextView.getText() + "\nonLocationChanged: current location is null";
                 logTextView.setText(stringLog);
             } else {
                 isBetterLocation = isBetterLocation(prevLocation, location);
                 if (isBetterLocation) {
                     prevLocation = location;
                     if (fillLog) {
-                        stringLog = logTextView.getText() + "\n onLocationChanged: got better location";
+                        stringLog = logTextView.getText() + "\nonLocationChanged: got better location";
                         logTextView.setText(stringLog);
                         fillLog = false;
                         progressTable.setVisibility(View.GONE);
@@ -96,7 +99,7 @@ public class GPSListener implements LocationListener {
                     }
                     printResults(initialLocation, location);
                 } else {
-                    stringLog = logTextView.getText() + "\n onLocationChanged: isn't better location";
+                    stringLog = logTextView.getText() + "\nonLocationChanged: isn't better location";
                     logTextView.setText(stringLog);
                     fillLog = true;
                 }
@@ -145,28 +148,37 @@ public class GPSListener implements LocationListener {
 
     public void printResults(Location initialLocation, Location location) {
 
-        initLongTextView.setText("Init. Long. " + initialLocation.getLongitude());
-        initLatTextView.setText("Init. Lat. " + initialLocation.getLatitude());
-        initAccTextView.setText("Init. Accuracy " + initialLocation.getAccuracy() + " meters");
+        text = "Init. Long. " + initialLocation.getLongitude();
+        initLongTextView.setText(text);
+        text = "Init. Lat. " + initialLocation.getLatitude();
+        initLatTextView.setText(text);
+        text = "Init. Accuracy " + initialLocation.getAccuracy() + " meters";
+        initAccTextView.setText(text);
 
         speedKMH = (int) ((location.getSpeed() * 3600) / 1000);
-        speedTextView.setText(speedKMH + " Km/H");
+        text = speedKMH + " Km/H";
+        speedTextView.setText(text);
 
 
         if (speedKMH == 0) {
-            movTypeTextView.setText("Moving Type - Stopped");
+            text = "Moving Type - Stopped";
         } else if (speedKMH <= 5) {
-            movTypeTextView.setText("Moving Type - Walking");
+            text = "Moving Type - Walking";
         } else {
-            movTypeTextView.setText("Moving Type - Driving");
+            text = "Moving Type - Driving";
         }
+        movTypeTextView.setText(text);
 
         distance = (int) initialLocation.distanceTo(location);
-        distanceTextView.setText("Distance: " + distance + " meters");
+        text = "Distance: " + distance + " meters";
+        distanceTextView.setText(text);
 
-        curLongTextView.setText("Curr. Long. " + location.getLongitude());
-        curLatTextView.setText("Curr. Lat. " + location.getLatitude());
-        curAccTextView.setText("Curr. Accuracy " + location.getAccuracy() + " meters");
+        text = "Curr. Long. " + location.getLongitude();
+        curLongTextView.setText(text);
+        text = "Curr. Lat. " + location.getLatitude();
+        curLatTextView.setText(text);
+        text = "Curr. Accuracy " + location.getAccuracy() + " meters";
+        curAccTextView.setText(text);
     }
 
     @Override
