@@ -36,7 +36,7 @@ public class GPSListener implements LocationListener {
     public boolean fillLog;
     public boolean isBetterLocation;
     public static final int ONE_MINUTE = 1000 * 60;
-    public static final int ACCURACY_ATTEMPTS = 10;
+    public static final int ACCURACY_ATTEMPTS = 7;
     public ProgressBar progress;
     public String text;
 
@@ -74,7 +74,7 @@ public class GPSListener implements LocationListener {
             initialLocation = location;
             prevLocation = location;
             accuracyDepth = accuracyDepth + 1;
-            text = "Setting GPS location " + accuracyDepth * 10 + "%";
+            text = "Setting GPS location " + accuracyDepth * ACCURACY_ATTEMPTS + "%";
             progressTextView.setText(text);
             progress.setProgress(accuracyDepth);
             stringLog = logTextView.getText() + "\nonLocationChanged: accuracy depth =" + accuracyDepth;

@@ -81,7 +81,6 @@ public class ITrackMainActivity extends AppCompatActivity {
         } else {
             Intent locIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivityForResult(locIntent, REQUEST_LOCATION);
-
         }
         return location;
     }
@@ -109,8 +108,10 @@ public class ITrackMainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        manager.removeUpdates(listener);
-        stringLog = logTextView.getText() + "\nonStop removing listener updates";
-        logTextView.setText(stringLog);
+        if (manager != null) {
+            manager.removeUpdates(listener);
+            stringLog = logTextView.getText() + "\nonStop removing listener updates";
+            logTextView.setText(stringLog);
+        }
     }
 }
