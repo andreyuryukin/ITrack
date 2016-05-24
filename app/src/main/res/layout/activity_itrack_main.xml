@@ -184,7 +184,6 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/tableLayoutData"
         android:layout_marginTop="12dp"
-        android:gravity="bottom"
         android:maxLines="5"
         android:scrollbars="vertical"
         android:textSize="15sp"
